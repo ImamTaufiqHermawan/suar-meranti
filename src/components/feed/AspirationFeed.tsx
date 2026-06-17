@@ -1,7 +1,7 @@
 import { AspirationFeedList } from "@/components/feed/AspirationCard";
 import { FeedToolbar } from "@/components/feed/FeedToolbar";
 import { getAspirationsPage } from "@/lib/feed-actions";
-import { getAdminSessionAction } from "@/lib/actions";
+import { getAdminSession } from "@/lib/auth/session";
 import type { AspirationCategory } from "@/types/aspiration";
 import { MessageSquareHeart, SearchX } from "lucide-react";
 
@@ -16,7 +16,7 @@ export async function AspirationFeed({
 }: AspirationFeedProps) {
   const [feedPage, session] = await Promise.all([
     getAspirationsPage({ search, category, limit: 10 }),
-    getAdminSessionAction(),
+    getAdminSession(),
   ]);
 
   const isAdmin = Boolean(session);
