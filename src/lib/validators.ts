@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   getPlainTextFromHtml,
   isEmptyHtml,
-  sanitizeHtml,
+  normalizeContentHtml,
 } from "@/lib/sanitize";
 
 export const aspirationSchema = z
@@ -14,7 +14,7 @@ export const aspirationSchema = z
     author_address: z.string().trim().optional(),
   })
   .superRefine((data, ctx) => {
-    const sanitized = sanitizeHtml(data.content);
+    const sanitized = normalizeContentHtml(data.content);
     const plainLength = getPlainTextFromHtml(sanitized).length;
 
     if (isEmptyHtml(sanitized) || plainLength < 10) {
@@ -60,5 +60,5 @@ export const aspirationSchema = z
 export type AspirationFormData = z.infer<typeof aspirationSchema>;
 
 export function prepareContentForStorage(content: string): string {
-  return sanitizeHtml(content);
+  return normalizeContentHtml(content);
 }

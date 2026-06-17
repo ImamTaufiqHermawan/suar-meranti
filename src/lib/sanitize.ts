@@ -1,4 +1,5 @@
 import sanitizeHtmlLib from "sanitize-html";
+import { unwrapHtmlStoredAsPlainText } from "@/lib/html-paste";
 
 const ALLOWED_TAGS = [
   "p",
@@ -41,4 +42,8 @@ export function getPlainTextFromHtml(html: string): string {
 
 export function isEmptyHtml(html: string): boolean {
   return getPlainTextFromHtml(html).length === 0;
+}
+
+export function normalizeContentHtml(html: string): string {
+  return sanitizeHtml(unwrapHtmlStoredAsPlainText(html));
 }

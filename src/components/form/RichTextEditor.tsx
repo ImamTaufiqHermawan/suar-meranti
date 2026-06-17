@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useEditor, EditorContent, useEditorState } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
+import { resolvePasteHtml } from "@/lib/html-paste";
 import { cn } from "@/lib/utils";
 import {
   Bold,
@@ -86,6 +87,8 @@ export function RichTextEditor({
   error,
   maxPlainLength = 2000,
 }: RichTextEditorProps) {
+  const editorRef = useRef<Editor | null>(null);
+
   const extensions = useMemo(
     () => [
       StarterKit.configure({
@@ -114,10 +117,29 @@ export function RichTextEditor({
     extensions,
     content: value,
     immediatelyRender: false,
+    onCreate: ({ editor: ed }) => {
+      editorRef.current = ed;
+    },
+    onDestroy: () => {
+      editorRef.current = null;
+    },
     editorProps: {
       attributes: {
         class:
           "prose-meranti min-h-[140px] w-full px-3 py-3 text-sm text-meranti-forest focus:outline-none sm:px-4",
+      },
+      handlePaste: (_view, event) => {
+        const plainText = event.clipboardData?.getData("text/plain") ?? "";
+        const htmlText = event.clipboardData?.getData("text/html") ?? "";
+        const parsedHtml = resolvePasteHtml(plainText, htmlText);
+
+        if (!parsedHtml || !editorRef.current) {
+          return false;
+        }
+
+        event.preventDefault();
+        editorRef.current.chain().focus().insertContent(parsedHtml).run();
+        return true;
       },
     },
     onUpdate: ({ editor: ed }) => {
