@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { deleteAspiration } from "@/lib/actions";
+import { deleteAspiration } from "@/lib/admin-actions";
 import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 

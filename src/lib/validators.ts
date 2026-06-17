@@ -57,17 +57,6 @@ export const aspirationSchema = z
     }
   });
 
-export const loginSchema = z.object({
-  username: z.string().trim().min(3, "Username wajib diisi"),
-  password: z.string().min(6, "Password wajib diisi"),
-});
-
-export const visitorIdSchema = z
-  .string()
-  .trim()
-  .min(8, "Visitor ID tidak valid")
-  .max(64, "Visitor ID tidak valid");
-
 export type AspirationFormData = z.infer<typeof aspirationSchema>;
 
 export function prepareContentForStorage(content: string): string {

@@ -13,7 +13,7 @@ import { DeleteAspirationButton } from "@/components/admin/DeleteAspirationButto
 import {
   getLikedAspirationIds,
   likeAspiration,
-} from "@/lib/actions";
+} from "@/lib/like-actions";
 import { loadMoreAspirations } from "@/lib/feed-actions";
 import { RelativeTime } from "@/components/feed/RelativeTime";
 import {

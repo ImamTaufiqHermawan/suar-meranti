@@ -7,7 +7,7 @@ import { RichTextEditor } from "@/components/form/RichTextEditor";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
-import { submitAspiration } from "@/lib/actions";
+import { submitAspiration } from "@/lib/submit-actions";
 import type { AspirationCategory } from "@/types/aspiration";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
