@@ -30,8 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — jangan commit secret; .env.example tetap di-track
+.env
+.env.local
+.env.*.local
+!.env.example
 
 # vercel
 .vercel

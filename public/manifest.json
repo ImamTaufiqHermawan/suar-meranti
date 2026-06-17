@@ -1,0 +1,19 @@
+{
+  "name": "SuarMeranti",
+  "short_name": "SuarMeranti",
+  "description": "Kotak Saran & Aspirasi Warga Bukit Meranti",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F7F0",
+  "theme_color": "#1B4332",
+  "orientation": "portrait-primary",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

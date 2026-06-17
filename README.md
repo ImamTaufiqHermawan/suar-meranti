@@ -1,36 +1,124 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SuarMeranti
 
-## Getting Started
+**Kotak Saran & Aspirasi Warga — Cluster Bukit Meranti, Citra Indah City Jonggol**
 
-First, run the development server:
+> *Suara Warga, Harmoni Komunitas*
+
+Platform web responsif untuk warga Cluster Bukit Meranti menyampaikan saran, aspirasi, keluhan, dan pujian — dengan feed publik yang bisa dilihat semua warga.
+
+![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwind-css)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?style=flat-square&logo=supabase)
+
+---
+
+## Fitur
+
+- **Kirim aspirasi** — dengan opsi anonim atau tampilkan nama & alamat rumah
+- **Feed publik** — semua posting langsung tampil (tanpa moderasi)
+- **4 kategori** — Saran, Aspirasi, Keluhan, Pujian
+- **Tombol suka** — warga bisa mendukung aspirasi orang lain
+- **100% responsif** — mobile, tablet, laptop/PC
+- **Cross-browser** — Chrome, Firefox, Safari (Android & iOS)
+- **Tema Bukit Meranti** — warna alam perbukitan, hijau hutan, kayu Meranti
+
+---
+
+## Quick Start
+
+### 1. Clone & install
+
+```bash
+git clone https://github.com/USERNAME/suar-meranti.git
+cd suar-meranti
+npm install
+```
+
+### 2. Setup environment
+
+```bash
+cp .env.example .env.local
+```
+
+Isi `.env.local` dengan kredensial Supabase (lihat [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)).
+
+### 3. Setup database
+
+Jalankan SQL di Supabase SQL Editor:
+
+```
+supabase/migrations/001_init.sql
+```
+
+### 4. Jalankan
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Command | Deskripsi |
+|---------|-----------|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run start` | Jalankan production build |
+| `npm run lint` | ESLint check |
+| `npm run typecheck` | TypeScript check |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Struktur Proyek
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                  # Next.js App Router (pages, layout, API)
+├── components/
+│   ├── feed/             # Feed & card posting
+│   ├── form/             # Form kirim aspirasi
+│   ├── layout/           # Header, Footer, Hero
+│   └── ui/               # Button, Input, Card, dll
+├── lib/
+│   ├── actions.ts        # Server Actions (submit, like, fetch)
+│   ├── supabase/         # Supabase client
+│   └── validators.ts     # Zod schemas
+└── types/                # TypeScript types
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Panduan lengkap deploy ke Vercel: **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)**
+
+Ringkasan:
+1. Push ke GitHub repo `suar-meranti`
+2. Setup Supabase + jalankan migration
+3. Import ke Vercel + set env variables
+4. Deploy otomatis setiap push ke `main`
+
+---
+
+## Tema Warna
+
+| Token | Hex | Makna |
+|-------|-----|-------|
+| Forest Green | `#1B4332` | Nuansa alam, perbukitan |
+| Meranti Wood | `#8B5E3C` | Nama cluster, kayu tropis |
+| Hilltop Gold | `#C9A227` | RE Silver, premium terjangkau |
+| Sage Cream | `#F5F7F0` | Background bersih |
+| Sky Blue | `#4A90A4` | Pemandangan dataran tinggi |
+
+---
+
+## Lisensi
+
+Proyek ini dibuat untuk komunitas warga Cluster Bukit Meranti.
+
+Bukan produk resmi PT Ciputra Indah.

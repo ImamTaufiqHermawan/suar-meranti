@@ -1,26 +1,111 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --meranti-forest: #1b4332;
+  --meranti-forest-light: #2d6a4f;
+  --meranti-wood: #8b5e3c;
+  --meranti-wood-light: #c4a882;
+  --meranti-gold: #c9a227;
+  --meranti-sage: #f5f7f0;
+  --meranti-mist: #e8ede3;
+  --meranti-sky: #4a90a4;
+  --background: var(--meranti-sage);
+  --foreground: var(--meranti-forest);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-meranti-forest: var(--meranti-forest);
+  --color-meranti-forest-light: var(--meranti-forest-light);
+  --color-meranti-wood: var(--meranti-wood);
+  --color-meranti-wood-light: var(--meranti-wood-light);
+  --color-meranti-gold: var(--meranti-gold);
+  --color-meranti-sage: var(--meranti-sage);
+  --color-meranti-mist: var(--meranti-mist);
+  --color-meranti-sky: var(--meranti-sky);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-plus-jakarta);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  min-height: 100dvh;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+.font-heading {
+  font-family: var(--font-plus-jakarta), system-ui, sans-serif;
+}
+
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    #1b4332 0%,
+    #2d6a4f 35%,
+    #4a90a4 70%,
+    #2d6a4f 100%
+  );
+}
+
+.hero-pattern {
+  background-image: radial-gradient(
+      circle at 20% 80%,
+      rgba(201, 162, 39, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(139, 94, 60, 0.1) 0%,
+      transparent 50%
+    );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background-color: rgba(201, 162, 39, 0.3);
+  color: var(--meranti-forest);
+}
+
+button,
+a[href],
+[role="button"],
+[role="switch"],
+label[for],
+summary {
+  cursor: pointer;
+}
+
+button:disabled,
+[disabled] {
+  cursor: not-allowed;
+}
+
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):not(
+    [type="checkbox"]
+  ):not([type="radio"]),
+textarea {
+  cursor: text;
 }
