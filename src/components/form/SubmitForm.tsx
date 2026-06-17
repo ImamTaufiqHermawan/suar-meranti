@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { submitAspiration } from "@/lib/actions";
-import { aspirationSchema } from "@/lib/validators";
 import type { AspirationCategory } from "@/types/aspiration";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,25 +37,26 @@ export function SubmitForm() {
       author_address: authorAddress,
     };
 
-    const parsed = aspirationSchema.safeParse(raw);
-    if (!parsed.success) {
-      const fieldErrors: Record<string, string> = {};
-      parsed.error.issues.forEach((issue) => {
-        const field = issue.path[0]?.toString();
-        if (field) fieldErrors[field] = issue.message;
-      });
-      setErrors(fieldErrors);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.set("content", content);
-    formData.set("category", category);
-    formData.set("is_anonymous", String(isAnonymous));
-    formData.set("author_name", authorName);
-    formData.set("author_address", authorAddress);
-
     startTransition(async () => {
+      const { aspirationSchema } = await import("@/lib/validators");
+      const parsed = aspirationSchema.safeParse(raw);
+      if (!parsed.success) {
+        const fieldErrors: Record<string, string> = {};
+        parsed.error.issues.forEach((issue) => {
+          const field = issue.path[0]?.toString();
+          if (field) fieldErrors[field] = issue.message;
+        });
+        setErrors(fieldErrors);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.set("content", content);
+      formData.set("category", category);
+      formData.set("is_anonymous", String(isAnonymous));
+      formData.set("author_name", authorName);
+      formData.set("author_address", authorAddress);
+
       const result = await submitAspiration(formData);
       if (result.success) {
         setStatus("success");

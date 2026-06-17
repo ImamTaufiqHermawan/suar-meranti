@@ -6,7 +6,6 @@ import type { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { cn } from "@/lib/utils";
-import { getPlainTextFromHtml } from "@/lib/sanitize";
 import {
   Bold,
   Italic,
@@ -23,6 +22,16 @@ interface RichTextEditorProps {
   onChange: (html: string) => void;
   error?: string;
   maxPlainLength?: number;
+}
+
+function getPlainTextLength(html: string): number {
+  return html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim().length;
 }
 
 type ToolbarState = {
@@ -129,7 +138,7 @@ export function RichTextEditor({
   }) as (ToolbarState & { _tick?: number }) | null;
 
   const t = toolbar ?? DEFAULT_TOOLBAR;
-  const plainLength = getPlainTextFromHtml(value).length;
+  const plainLength = getPlainTextLength(value);
 
   const setLink = () => {
     if (!editor) return;
