@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { submitAspiration } from "@/lib/submit-actions";
+import { useFeedSync } from "@/components/feed/FeedSyncContext";
 import type { AspirationCategory } from "@/types/aspiration";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,6 +24,7 @@ export function SubmitForm() {
   const [statusMessage, setStatusMessage] = useState("");
   const [isPending, startTransition] = useTransition();
   const [editorKey, setEditorKey] = useState(0);
+  const { notifyNewAspiration } = useFeedSync();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,6 +61,9 @@ export function SubmitForm() {
 
       const result = await submitAspiration(formData);
       if (result.success) {
+        if (result.data) {
+          notifyNewAspiration(result.data);
+        }
         setStatus("success");
         setStatusMessage("Aspirasi berhasil dikirim dan langsung tampil di feed!");
         setContent("<p></p>");
@@ -67,6 +72,10 @@ export function SubmitForm() {
         setAuthorAddress("");
         setIsAnonymous(true);
         setCategory("saran");
+        document.getElementById("feed")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
         setTimeout(() => setStatus("idle"), 5000);
       } else {
         setStatus("error");

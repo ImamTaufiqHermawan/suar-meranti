@@ -9,10 +9,11 @@ import {
   isFetchFailedError,
 } from "@/lib/supabase/server";
 import type { ActionResult } from "@/lib/action-result";
+import type { Aspiration } from "@/types/aspiration";
 
 export async function submitAspiration(
   formData: FormData,
-): Promise<ActionResult<{ id: string }>> {
+): Promise<ActionResult<Aspiration>> {
   if (!isSupabaseConfigured()) {
     return {
       success: false,
@@ -54,7 +55,9 @@ export async function submitAspiration(
         author_name: is_anonymous ? null : (author_name ?? null),
         author_address: is_anonymous ? null : (author_address ?? null),
       })
-      .select("id")
+      .select(
+        "id, content, category, is_anonymous, author_name, author_address, likes_count, created_at",
+      )
       .single();
 
     if (error) {
@@ -69,7 +72,7 @@ export async function submitAspiration(
     }
 
     revalidatePath("/");
-    return { success: true, data: { id: data.id } };
+    return { success: true, data: data as Aspiration };
   } catch (error) {
     const hint = getSupabaseConnectionHint(error);
     console.error("submitAspiration error:", error, hint ?? "");

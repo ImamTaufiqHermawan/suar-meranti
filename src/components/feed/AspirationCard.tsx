@@ -17,6 +17,8 @@ import {
 import { loadMoreAspirations } from "@/lib/feed-actions";
 import { RelativeTime } from "@/components/feed/RelativeTime";
 import { useFeedCount } from "@/components/feed/FeedCountContext";
+import { useFeedSync } from "@/components/feed/FeedSyncContext";
+import { matchesFeedFilters } from "@/lib/feed-match";
 import {
   addLocalLikedId,
   getLocalLikedIds,
@@ -29,7 +31,7 @@ import type {
   AspirationCategory,
   FeedCursor,
 } from "@/types/aspiration";
-import { Heart, Loader2, MapPin, UserCircle2 } from "lucide-react";
+import { Heart, Loader2, MapPin, MessageSquareHeart, SearchX, UserCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface AspirationCardProps {
@@ -158,6 +160,7 @@ interface AspirationFeedListProps {
   search: string;
   category?: AspirationCategory;
   isAdmin: boolean;
+  hasActiveFilters: boolean;
 }
 
 function FeedCardSkeleton() {
@@ -171,6 +174,7 @@ export function AspirationFeedList({
   search,
   category,
   isAdmin,
+  hasActiveFilters,
 }: AspirationFeedListProps) {
   const [items, setItems] = useState(initialItems);
   const [nextCursor, setNextCursor] = useState(initialNextCursor);
@@ -180,7 +184,29 @@ export function AspirationFeedList({
   const [isPending, startTransition] = useTransition();
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const initialCount = initialItems.length;
+  const [ssrIds] = useState(
+    () => new Set(initialItems.map((item) => item.id)),
+  );
   const { setCount, setHasMore: setFeedHasMore } = useFeedCount();
+  const { subscribeToNewAspirations } = useFeedSync();
+
+  useEffect(() => {
+    return subscribeToNewAspirations((item) => {
+      if (!matchesFeedFilters(item, search, category)) {
+        return;
+      }
+
+      setItems((current) => {
+        if (current.some((existing) => existing.id === item.id)) {
+          return current;
+        }
+
+        const next = [item, ...current];
+        setCount(next.length);
+        return next;
+      });
+    });
+  }, [subscribeToNewAspirations, search, category, setCount]);
 
   useEffect(() => {
     let cancelled = false;
@@ -285,10 +311,22 @@ export function AspirationFeedList({
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-meranti-mist bg-white/60 px-6 py-16 text-center">
-        <p className="font-heading text-lg font-semibold text-meranti-forest">
-          {search.trim() || category
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-meranti-sage">
+          {hasActiveFilters ? (
+            <SearchX className="h-8 w-8 text-meranti-forest/40" />
+          ) : (
+            <MessageSquareHeart className="h-8 w-8 text-meranti-forest/40" />
+          )}
+        </div>
+        <h3 className="font-heading text-lg font-semibold text-meranti-forest">
+          {hasActiveFilters
             ? "Tidak ada aspirasi yang cocok"
             : "Belum ada aspirasi"}
+        </h3>
+        <p className="mt-2 max-w-sm text-sm text-meranti-forest/60">
+          {hasActiveFilters
+            ? "Coba ubah kata kunci pencarian atau pilih kategori lain."
+            : "Jadilah yang pertama menyampaikan saran atau aspirasi untuk lingkungan Bukit Meranti yang lebih baik!"}
         </p>
       </div>
     );
@@ -303,7 +341,9 @@ export function AspirationFeedList({
           index={index}
           isAdmin={isAdmin}
           initialLiked={likedIds?.has(aspiration.id) ?? false}
-          enableEntranceAnimation={index < initialCount}
+          enableEntranceAnimation={
+            !ssrIds.has(aspiration.id) || index < initialCount
+          }
           onDeleted={() => handleDeleted(aspiration.id)}
         />
       ))}
