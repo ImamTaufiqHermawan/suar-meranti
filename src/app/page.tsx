@@ -3,10 +3,19 @@ import { Hero } from "@/components/layout/Hero";
 import { SubmitForm } from "@/components/form/SubmitForm";
 import { AspirationFeed } from "@/components/feed/AspirationFeed";
 import { FeedSkeleton } from "@/components/ui/Skeleton";
+import { parseFeedCategory } from "@/lib/validators";
 
 export const dynamic = "force-dynamic";
 
-export default function Home() {
+interface HomeProps {
+  searchParams: Promise<{ q?: string; category?: string }>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const params = await searchParams;
+  const search = params.q?.trim() ?? "";
+  const category = parseFeedCategory(params.category);
+
   return (
     <>
       <Hero />
@@ -16,7 +25,7 @@ export default function Home() {
           <SubmitForm />
 
           <Suspense fallback={<FeedSkeleton />}>
-            <AspirationFeed />
+            <AspirationFeed search={search} category={category} />
           </Suspense>
         </div>
       </div>

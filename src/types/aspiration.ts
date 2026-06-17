@@ -1,5 +1,23 @@
 export type AspirationCategory = "saran" | "aspirasi" | "keluhan" | "pujian";
 
+export interface FeedCursor {
+  created_at: string;
+  id: string;
+}
+
+export interface FeedQuery {
+  search?: string;
+  category?: AspirationCategory;
+  cursor?: FeedCursor;
+  limit?: number;
+}
+
+export interface FeedPageResult {
+  items: Aspiration[];
+  nextCursor: FeedCursor | null;
+  hasMore: boolean;
+}
+
 export interface Aspiration {
   id: string;
   content: string;
