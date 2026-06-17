@@ -1,6 +1,7 @@
 import { AspirationFeedList } from "@/components/feed/AspirationCard";
 import { FeedToolbar } from "@/components/feed/FeedToolbar";
-import { getAspirationsPage, getAdminSessionAction } from "@/lib/actions";
+import { getAspirationsPage } from "@/lib/feed-actions";
+import { getAdminSessionAction } from "@/lib/actions";
 import type { AspirationCategory } from "@/types/aspiration";
 import { MessageSquareHeart, SearchX } from "lucide-react";
 

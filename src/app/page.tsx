@@ -3,7 +3,7 @@ import { Hero } from "@/components/layout/Hero";
 import { SubmitForm } from "@/components/form/SubmitForm";
 import { AspirationFeed } from "@/components/feed/AspirationFeed";
 import { FeedSkeleton } from "@/components/ui/Skeleton";
-import { parseFeedCategory } from "@/lib/validators";
+import { parseFeedCategory } from "@/lib/feed-validators";
 
 export const dynamic = "force-dynamic";
 

@@ -13,15 +13,16 @@ import { DeleteAspirationButton } from "@/components/admin/DeleteAspirationButto
 import {
   getLikedAspirationIds,
   likeAspiration,
-  loadMoreAspirations,
 } from "@/lib/actions";
+import { loadMoreAspirations } from "@/lib/feed-actions";
+import { RelativeTime } from "@/components/feed/RelativeTime";
 import {
   addLocalLikedId,
   getLocalLikedIds,
   getVisitorId,
   setLocalLikedIds,
 } from "@/lib/visitor";
-import { cn, formatRelativeTime, getDisplayName } from "@/lib/utils";
+import { cn, getDisplayName } from "@/lib/utils";
 import type {
   Aspiration,
   AspirationCategory,
@@ -106,12 +107,10 @@ export function AspirationCard({
             </p>
           )}
 
-          <time
+          <RelativeTime
             dateTime={aspiration.created_at}
             className="mt-0.5 block text-xs text-meranti-forest/40"
-          >
-            {formatRelativeTime(aspiration.created_at)}
-          </time>
+          />
         </div>
       </div>
 

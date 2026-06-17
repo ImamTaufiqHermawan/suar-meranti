@@ -126,7 +126,7 @@ export function SubmitForm() {
           >
             <Input
               label="Nama"
-              placeholder="Contoh: Budi Santoso"
+              placeholder="Contoh: Imam T H"
               value={authorName}
               onChange={(e) => setAuthorName(e.target.value)}
               error={errors.author_name}
@@ -134,7 +134,7 @@ export function SubmitForm() {
             />
             <Input
               label="Alamat Rumah"
-              placeholder="Contoh: Blok CH.11 No. 5"
+              placeholder="Contoh: CH12/NO15"
               value={authorAddress}
               onChange={(e) => setAuthorAddress(e.target.value)}
               error={errors.author_address}

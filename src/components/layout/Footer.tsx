@@ -74,7 +74,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 border-t border-white/10 pt-6 text-center text-xs text-white/50">
-          <p>
+          <p suppressHydrationWarning>
             © {new Date().getFullYear()} SuarMeranti — Kotak Saran & Aspirasi
             Warga Bukit Meranti
           </p>

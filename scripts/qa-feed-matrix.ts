@@ -7,9 +7,11 @@ import { resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import {
   aspirationSchema,
+} from "../src/lib/validators";
+import {
   feedQuerySchema,
   parseFeedCategory,
-} from "../src/lib/validators";
+} from "../src/lib/feed-validators";
 import { getPlainTextFromHtml, sanitizeHtml } from "../src/lib/sanitize";
 
 type CaseResult = { name: string; pass: boolean; detail?: string };
