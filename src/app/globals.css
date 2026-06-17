@@ -109,3 +109,127 @@ input:not([type="button"]):not([type="submit"]):not([type="reset"]):not(
 textarea {
   cursor: text;
 }
+
+/* Rich text editor & feed content */
+.prose-meranti {
+  word-break: break-word;
+}
+
+.prose-meranti p {
+  margin: 0.5em 0;
+}
+
+.prose-meranti p:first-child {
+  margin-top: 0;
+}
+
+.prose-meranti p:last-child {
+  margin-bottom: 0;
+}
+
+.prose-meranti h1,
+.prose-meranti .tiptap h1 {
+  margin: 0.9em 0 0.45em;
+  font-family: var(--font-plus-jakarta), system-ui, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--meranti-forest);
+}
+
+.prose-meranti h2,
+.prose-meranti .tiptap h2 {
+  margin: 0.85em 0 0.4em;
+  font-family: var(--font-plus-jakarta), system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--meranti-forest);
+}
+
+.prose-meranti h3,
+.prose-meranti .tiptap h3 {
+  margin: 0.75em 0 0.35em;
+  font-family: var(--font-plus-jakarta), system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--meranti-forest);
+}
+
+.prose-meranti h1:first-child,
+.prose-meranti h2:first-child,
+.prose-meranti h3:first-child,
+.prose-meranti .tiptap h1:first-child,
+.prose-meranti .tiptap h2:first-child,
+.prose-meranti .tiptap h3:first-child {
+  margin-top: 0;
+}
+
+.prose-meranti ul,
+.prose-meranti ol,
+.prose-meranti .tiptap ul,
+.prose-meranti .tiptap ol {
+  margin: 0.5em 0;
+  padding-left: 1.75em;
+}
+
+.prose-meranti ul,
+.prose-meranti .tiptap ul {
+  list-style-type: disc;
+  list-style-position: outside;
+}
+
+.prose-meranti ol,
+.prose-meranti .tiptap ol {
+  list-style-type: decimal;
+  list-style-position: outside;
+}
+
+.prose-meranti ul ul,
+.prose-meranti .tiptap ul ul {
+  list-style-type: circle;
+}
+
+.prose-meranti ol ol,
+.prose-meranti .tiptap ol ol {
+  list-style-type: lower-alpha;
+}
+
+.prose-meranti li,
+.prose-meranti .tiptap li {
+  display: list-item;
+  margin: 0.25em 0;
+  padding-left: 0.15em;
+}
+
+.prose-meranti li > p,
+.prose-meranti .tiptap li > p {
+  margin: 0;
+}
+
+.prose-meranti a {
+  color: var(--meranti-sky);
+  text-decoration: underline;
+}
+
+.prose-meranti strong,
+.prose-meranti b {
+  font-weight: 600;
+}
+
+.prose-meranti blockquote {
+  margin: 0.75em 0;
+  border-left: 3px solid var(--meranti-gold);
+  padding-left: 1em;
+  color: var(--meranti-forest);
+  opacity: 0.85;
+}
+
+.prose-meranti .tiptap p.is-editor-empty:first-child::before {
+  color: rgba(27, 67, 50, 0.4);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

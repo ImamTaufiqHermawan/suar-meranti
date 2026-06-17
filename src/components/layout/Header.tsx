@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Menu, X, MapPin } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { CLUSTER_MAPS_URL } from "@/lib/constants";
 
@@ -12,7 +12,11 @@ const NAV_LINKS = [
   { href: "#feed", label: "Feed Warga" },
 ];
 
-export function Header() {
+interface HeaderProps {
+  adminSlot?: ReactNode;
+}
+
+export function Header({ adminSlot }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -56,6 +60,7 @@ export function Header() {
             <MapPin className="h-4 w-4" />
             Lokasi
           </a>
+          {adminSlot}
         </nav>
 
         <button
@@ -95,6 +100,7 @@ export function Header() {
             <MapPin className="h-4 w-4" />
             Lihat Lokasi Cluster
           </a>
+          {adminSlot && <div className="px-4 py-2">{adminSlot}</div>}
         </nav>
       </div>
     </header>

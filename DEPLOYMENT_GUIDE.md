@@ -124,9 +124,10 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 1. Di dashboard Supabase, buka **SQL Editor**
 2. Klik **New query**
-3. Copy seluruh isi file [`supabase/migrations/001_init.sql`](supabase/migrations/001_init.sql)
-4. Paste ke editor, klik **Run**
-5. Pastikan muncul pesan sukses — tabel `aspirations` sudah dibuat
+3. Copy seluruh isi file [`supabase/migrations/001_init.sql`](supabase/migrations/001_init.sql) → **Run**
+4. Buat query baru, copy [`supabase/migrations/002_admin_likes_richtext.sql`](supabase/migrations/002_admin_likes_richtext.sql) → **Run**
+5. Buat query baru, copy [`supabase/migrations/003_fix_admin_bcrypt.sql`](supabase/migrations/003_fix_admin_bcrypt.sql) → **Run**
+6. Pastikan tabel `aspirations`, `aspiration_likes`, dan `admins` sudah ada
 
 ### Langkah 5.3 — Ambil API credentials
 
@@ -134,15 +135,35 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 2. Copy:
    - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
    - **anon public** key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-3. Paste ke `.env.local`
+   - **service_role** key → `SUPABASE_SERVICE_ROLE_KEY` (wajib untuk login & hapus admin)
+3. Generate `ADMIN_SESSION_SECRET` (string random min. 32 karakter)
+4. Paste semua ke `.env.local`
 
-### Langkah 5.4 — Verifikasi RLS (Row Level Security)
+### Langkah 5.4 — Buat akun admin (aman, tanpa password di git)
 
-Di **Table Editor** → tabel `aspirations`, pastikan:
-- RLS enabled
-- Policy "Public read" (SELECT)
-- Policy "Public insert" (INSERT)
-- Policy "Public update likes" (UPDATE)
+Migration SQL **tidak** menyimpan password plaintext. Hash bcrypt aman di-push ke GitHub, tetapi **jangan** commit password asli.
+
+1. Di terminal lokal (folder proyek), generate SQL seed:
+
+```bash
+node scripts/generate-admin-hash.mjs admin.meranti "PasswordKuatAnda"
+```
+
+2. Copy **output SQL** dari terminal → paste di Supabase **SQL Editor** → **Run**
+3. Simpan username & password di password manager (bukan di repository)
+
+> Lihat juga [`supabase/seed.admin.example.sql`](supabase/seed.admin.example.sql) sebagai panduan.
+
+Login via tombol **Admin** di header. Setelah login, tombol **Hapus** muncul di setiap posting.
+
+**Production:** gunakan password kuat dan unik — jangan pakai password contoh.
+
+### Langkah 5.5 — Verifikasi RLS (Row Level Security)
+
+Di **Table Editor**, pastikan:
+- `aspirations`: policy Public read + Public insert
+- `aspiration_likes`: policy Public read + Public insert
+- `admins`: RLS enabled, tanpa policy publik
 
 ---
 
@@ -160,7 +181,8 @@ Buka [http://localhost:3000](http://localhost:3000)
 2. Pilih kategori, toggle anonim/identitas, tulis pesan
 3. Klik **Kirim Aspirasi**
 4. Posting harus langsung muncul di **Feed Aspirasi Warga**
-5. Klik tombol **Suka** pada posting
+5. Klik tombol **Suka** pada posting — hanya bisa 1x per perangkat
+6. Login admin → hapus posting uji coba
 
 ### Perintah lain
 
@@ -190,6 +212,8 @@ Di halaman import, tambahkan:
 |------|-------|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL dari Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key dari Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key (untuk hapus admin) |
+| `ADMIN_SESSION_SECRET` | Secret random min. 32 karakter |
 | `NEXT_PUBLIC_APP_URL` | `https://suar-meranti.vercel.app` |
 
 ### Langkah 7.3 — Deploy
@@ -221,6 +245,8 @@ Pipeline sudah dikonfigurasi di [`.github/workflows/pipeline.yml`](.github/workf
 |-------------|-------|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key Supabase |
+| `ADMIN_SESSION_SECRET` | Secret session admin |
 
 ### Langkah 8.2 — Alur otomatis
 

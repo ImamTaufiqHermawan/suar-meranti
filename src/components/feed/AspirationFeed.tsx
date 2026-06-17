@@ -1,9 +1,14 @@
-import { AspirationCard } from "@/components/feed/AspirationCard";
-import { getAspirations } from "@/lib/actions";
+import { AspirationFeedList } from "@/components/feed/AspirationCard";
+import { getAspirations, getAdminSessionAction } from "@/lib/actions";
 import { MessageSquareHeart, RefreshCw } from "lucide-react";
 
 export async function AspirationFeed() {
-  const aspirations = await getAspirations();
+  const [aspirations, session] = await Promise.all([
+    getAspirations(),
+    getAdminSessionAction(),
+  ]);
+
+  const isAdmin = Boolean(session);
 
   return (
     <section id="feed" className="scroll-mt-24">
@@ -36,15 +41,7 @@ export async function AspirationFeed() {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-4">
-          {aspirations.map((aspiration, index) => (
-            <AspirationCard
-              key={aspiration.id}
-              aspiration={aspiration}
-              index={index}
-            />
-          ))}
-        </div>
+        <AspirationFeedList aspirations={aspirations} isAdmin={isAdmin} />
       )}
     </section>
   );

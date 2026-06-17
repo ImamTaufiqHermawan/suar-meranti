@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { AdminAuthSlot } from "@/components/admin/AdminAuthSlot";
 import "./globals.css";
 
 const inter = Inter({
@@ -70,7 +71,7 @@ export default function RootLayout({
       className={`${inter.variable} ${plusJakarta.variable} h-full`}
     >
       <body className="flex min-h-full flex-col antialiased">
-        <Header />
+        <Header adminSlot={<AdminAuthSlot />} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

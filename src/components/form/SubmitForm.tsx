@@ -3,9 +3,9 @@
 import { useState, useTransition } from "react";
 import { AnonymityToggle } from "@/components/form/AnonymityToggle";
 import { CategorySelect } from "@/components/form/CategorySelect";
+import { RichTextEditor } from "@/components/form/RichTextEditor";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
 import { Card } from "@/components/ui/Card";
 import { submitAspiration } from "@/lib/actions";
 import { aspirationSchema } from "@/lib/validators";
@@ -16,13 +16,14 @@ import { motion, AnimatePresence } from "framer-motion";
 export function SubmitForm() {
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [category, setCategory] = useState<AspirationCategory>("saran");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState("<p></p>");
   const [authorName, setAuthorName] = useState("");
   const [authorAddress, setAuthorAddress] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [editorKey, setEditorKey] = useState(0);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,7 +61,8 @@ export function SubmitForm() {
       if (result.success) {
         setStatus("success");
         setStatusMessage("Aspirasi berhasil dikirim dan langsung tampil di feed!");
-        setContent("");
+        setContent("<p></p>");
+        setEditorKey((k) => k + 1);
         setAuthorName("");
         setAuthorAddress("");
         setIsAnonymous(true);
@@ -80,8 +82,8 @@ export function SubmitForm() {
           Kirim Saran & Aspirasi
         </h2>
         <p className="mt-1 text-sm text-meranti-forest/60">
-          Sampaikan ide, keluhan, atau apresiasi Anda untuk lingkungan yang lebih
-          baik.
+          Sampaikan ide, keluhan, atau apresiasi Anda — dengan format teks kaya
+          (tebal, miring, daftar, tautan).
         </p>
       </div>
 
@@ -141,14 +143,11 @@ export function SubmitForm() {
           </motion.div>
         )}
 
-        <Textarea
-          label="Isi Pesan"
-          placeholder="Tuliskan saran, aspirasi, keluhan, atau pujian Anda di sini..."
+        <RichTextEditor
+          key={editorKey}
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={setContent}
           error={errors.content}
-          showCount
-          maxLength={2000}
         />
 
         <Button

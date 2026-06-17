@@ -16,10 +16,12 @@ Platform web responsif untuk warga Cluster Bukit Meranti menyampaikan saran, asp
 
 ## Fitur
 
+- **Rich text editor** — tebal, miring, garis bawah, daftar, tautan
 - **Kirim aspirasi** — dengan opsi anonim atau tampilkan nama & alamat rumah
 - **Feed publik** — semua posting langsung tampil (tanpa moderasi)
+- **Like per perangkat** — 1 suka per posting per device (visitor ID)
+- **Admin login/logout** — hapus posting tidak pantas
 - **4 kategori** — Saran, Aspirasi, Keluhan, Pujian
-- **Tombol suka** — warga bisa mendukung aspirasi orang lain
 - **100% responsif** — mobile, tablet, laptop/PC
 - **Cross-browser** — Chrome, Firefox, Safari (Android & iOS)
 - **Tema Bukit Meranti** — warna alam perbukitan, hijau hutan, kayu Meranti
@@ -46,11 +48,22 @@ Isi `.env.local` dengan kredensial Supabase (lihat [DEPLOYMENT_GUIDE.md](DEPLOYM
 
 ### 3. Setup database
 
-Jalankan SQL di Supabase SQL Editor:
+Jalankan SQL di Supabase SQL Editor (berurutan):
 
 ```
 supabase/migrations/001_init.sql
+supabase/migrations/002_admin_likes_richtext.sql
+supabase/migrations/003_fix_admin_bcrypt.sql
 ```
+
+Buat akun admin (password **tidak** disimpan di git):
+
+```bash
+node scripts/generate-admin-hash.mjs admin.meranti "PasswordKuatAnda"
+# → paste output SQL ke Supabase SQL Editor
+```
+
+Contoh isi aspirasi untuk testing: [`docs/CONTOH_TEMPLATE_ASPIRASI.md`](docs/CONTOH_TEMPLATE_ASPIRASI.md)
 
 ### 4. Jalankan
 

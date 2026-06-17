@@ -1,8 +1,16 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { CategoryBadge } from "@/components/feed/CategoryBadge";
-import { likeAspiration } from "@/lib/actions";
+import { AspirationContent } from "@/components/feed/AspirationContent";
+import { DeleteAspirationButton } from "@/components/admin/DeleteAspirationButton";
+import { getLikedAspirationIds, likeAspiration } from "@/lib/actions";
+import {
+  addLocalLikedId,
+  getLocalLikedIds,
+  getVisitorId,
+  setLocalLikedIds,
+} from "@/lib/visitor";
 import { cn, formatRelativeTime, getDisplayName } from "@/lib/utils";
 import type { Aspiration } from "@/types/aspiration";
 import { Heart, MapPin, UserCircle2 } from "lucide-react";
@@ -11,11 +19,18 @@ import { motion } from "framer-motion";
 interface AspirationCardProps {
   aspiration: Aspiration;
   index: number;
+  isAdmin?: boolean;
+  initialLiked?: boolean;
 }
 
-export function AspirationCard({ aspiration, index }: AspirationCardProps) {
+export function AspirationCard({
+  aspiration,
+  index,
+  isAdmin = false,
+  initialLiked = false,
+}: AspirationCardProps) {
   const [likes, setLikes] = useState(aspiration.likes_count);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(initialLiked);
   const [isPending, startTransition] = useTransition();
 
   const displayName = getDisplayName(aspiration);
@@ -23,14 +38,18 @@ export function AspirationCard({ aspiration, index }: AspirationCardProps) {
   const handleLike = () => {
     if (liked || isPending) return;
 
-    setLiked(true);
-    setLikes((prev) => prev + 1);
+    const visitorId = getVisitorId();
+    if (!visitorId) return;
 
     startTransition(async () => {
-      const result = await likeAspiration(aspiration.id);
-      if (!result.success) {
-        setLiked(false);
-        setLikes(aspiration.likes_count);
+      const result = await likeAspiration(aspiration.id, visitorId);
+      if (result.success) {
+        setLiked(true);
+        setLikes((prev) => prev + 1);
+        addLocalLikedId(aspiration.id);
+      } else if (result.error.includes("sudah menyukai")) {
+        setLiked(true);
+        addLocalLikedId(aspiration.id);
       }
     });
   };
@@ -76,11 +95,9 @@ export function AspirationCard({ aspiration, index }: AspirationCardProps) {
         </div>
       </div>
 
-      <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-meranti-forest/80 sm:text-base">
-        {aspiration.content}
-      </p>
+      <AspirationContent html={aspiration.content} />
 
-      <div className="mt-4 flex items-center gap-4 border-t border-meranti-mist pt-4">
+      <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-meranti-mist pt-4">
         <button
           type="button"
           onClick={handleLike}
@@ -100,7 +117,65 @@ export function AspirationCard({ aspiration, index }: AspirationCardProps) {
           />
           <span>{likes > 0 ? likes : "Suka"}</span>
         </button>
+
+        {isAdmin && <DeleteAspirationButton aspirationId={aspiration.id} />}
       </div>
     </motion.article>
+  );
+}
+
+interface AspirationFeedListProps {
+  aspirations: Aspiration[];
+  isAdmin: boolean;
+}
+
+export function AspirationFeedList({
+  aspirations,
+  isAdmin,
+}: AspirationFeedListProps) {
+  const [likedIds, setLikedIds] = useState<Set<string> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const visitorId = getVisitorId();
+    const localLiked = getLocalLikedIds();
+
+    getLikedAspirationIds(visitorId).then((serverLiked) => {
+      if (cancelled) return;
+      const merged = new Set([...localLiked, ...serverLiked]);
+      setLocalLikedIds([...merged]);
+      setLikedIds(merged);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [aspirations]);
+
+  if (likedIds === null && aspirations.length > 0) {
+    return (
+      <div className="flex flex-col gap-4">
+        {aspirations.map((_, i) => (
+          <div
+            key={i}
+            className="h-40 animate-pulse rounded-3xl bg-meranti-mist/60"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {aspirations.map((aspiration, index) => (
+        <AspirationCard
+          key={aspiration.id}
+          aspiration={aspiration}
+          index={index}
+          isAdmin={isAdmin}
+          initialLiked={likedIds?.has(aspiration.id) ?? false}
+        />
+      ))}
+    </div>
   );
 }
