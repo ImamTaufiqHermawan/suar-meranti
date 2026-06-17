@@ -1,19 +1,19 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { deleteAspiration } from "@/lib/admin-actions";
 import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DeleteAspirationButtonProps {
   aspirationId: string;
+  onDeleted?: () => void;
 }
 
 export function DeleteAspirationButton({
   aspirationId,
+  onDeleted,
 }: DeleteAspirationButtonProps) {
-  const router = useRouter();
   const [confirming, setConfirming] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -26,7 +26,7 @@ export function DeleteAspirationButton({
     startTransition(async () => {
       const result = await deleteAspiration(aspirationId);
       if (result.success) {
-        router.refresh();
+        onDeleted?.();
       } else {
         alert(result.error);
         setConfirming(false);

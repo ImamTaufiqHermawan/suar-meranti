@@ -16,6 +16,7 @@ import {
 } from "@/lib/like-actions";
 import { loadMoreAspirations } from "@/lib/feed-actions";
 import { RelativeTime } from "@/components/feed/RelativeTime";
+import { useFeedCount } from "@/components/feed/FeedCountContext";
 import {
   addLocalLikedId,
   getLocalLikedIds,
@@ -37,6 +38,7 @@ interface AspirationCardProps {
   isAdmin?: boolean;
   initialLiked?: boolean;
   enableEntranceAnimation?: boolean;
+  onDeleted?: () => void;
 }
 
 export function AspirationCard({
@@ -45,6 +47,7 @@ export function AspirationCard({
   isAdmin = false,
   initialLiked = false,
   enableEntranceAnimation = true,
+  onDeleted,
 }: AspirationCardProps) {
   const [likes, setLikes] = useState(aspiration.likes_count);
   const [liked, setLiked] = useState(initialLiked);
@@ -137,7 +140,12 @@ export function AspirationCard({
           <span>{likes > 0 ? likes : "Suka"}</span>
         </button>
 
-        {isAdmin && <DeleteAspirationButton aspirationId={aspiration.id} />}
+        {isAdmin && (
+          <DeleteAspirationButton
+            aspirationId={aspiration.id}
+            onDeleted={onDeleted}
+          />
+        )}
       </div>
     </motion.article>
   );
@@ -172,6 +180,7 @@ export function AspirationFeedList({
   const [isPending, startTransition] = useTransition();
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const initialCount = initialItems.length;
+  const { setCount, setHasMore: setFeedHasMore } = useFeedCount();
 
   useEffect(() => {
     let cancelled = false;
@@ -189,6 +198,17 @@ export function AspirationFeedList({
       cancelled = true;
     };
   }, [items]);
+
+  const handleDeleted = useCallback(
+    (id: string) => {
+      setItems((current) => {
+        const next = current.filter((item) => item.id !== id);
+        setCount(next.length);
+        return next;
+      });
+    },
+    [setCount],
+  );
 
   const loadMore = useCallback(() => {
     if (!hasMore || isLoadingMore || isPending || !nextCursor) {
@@ -210,10 +230,13 @@ export function AspirationFeedList({
           const newItems = result.items.filter(
             (item) => !existingIds.has(item.id),
           );
-          return [...current, ...newItems];
+          const next = [...current, ...newItems];
+          setCount(next.length);
+          return next;
         });
         setNextCursor(result.nextCursor);
         setHasMore(result.hasMore);
+        setFeedHasMore(result.hasMore);
       } finally {
         setIsLoadingMore(false);
       }
@@ -226,6 +249,8 @@ export function AspirationFeedList({
     search,
     category,
     startTransition,
+    setCount,
+    setFeedHasMore,
   ]);
 
   useEffect(() => {
@@ -257,6 +282,18 @@ export function AspirationFeedList({
     );
   }
 
+  if (items.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-meranti-mist bg-white/60 px-6 py-16 text-center">
+        <p className="font-heading text-lg font-semibold text-meranti-forest">
+          {search.trim() || category
+            ? "Tidak ada aspirasi yang cocok"
+            : "Belum ada aspirasi"}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {items.map((aspiration, index) => (
@@ -267,6 +304,7 @@ export function AspirationFeedList({
           isAdmin={isAdmin}
           initialLiked={likedIds?.has(aspiration.id) ?? false}
           enableEntranceAnimation={index < initialCount}
+          onDeleted={() => handleDeleted(aspiration.id)}
         />
       ))}
 
