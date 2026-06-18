@@ -76,8 +76,10 @@ export function Header({ adminSlot }: HeaderProps) {
 
       <div
         className={cn(
-          "overflow-hidden border-t border-meranti-mist bg-white transition-all duration-300 md:hidden",
-          menuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0 border-t-0",
+          "border-t border-meranti-mist bg-white transition-all duration-300 md:hidden",
+          menuOpen
+            ? "max-h-[min(85dvh,32rem)] overflow-y-auto opacity-100"
+            : "max-h-0 overflow-hidden opacity-0 border-t-0",
         )}
       >
         <nav className="flex flex-col gap-1 px-4 py-3">
@@ -100,7 +102,7 @@ export function Header({ adminSlot }: HeaderProps) {
             <MapPin className="h-4 w-4" />
             Lihat Lokasi Cluster
           </a>
-          {adminSlot && <div className="px-4 py-2">{adminSlot}</div>}
+          {adminSlot && <div className="py-2">{adminSlot}</div>}
         </nav>
       </div>
     </header>

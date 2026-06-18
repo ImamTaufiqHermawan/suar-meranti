@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { loginAdmin, logoutAdmin } from "@/lib/admin-actions";
+import { cn } from "@/lib/utils";
 import { LogIn, LogOut, Shield } from "lucide-react";
 
 interface AdminAuthButtonProps {
@@ -58,11 +59,11 @@ export function AdminAuthButton({
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full md:w-auto">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-meranti-mist px-3 py-2 text-sm font-medium text-meranti-forest/70 transition-colors hover:bg-meranti-sage hover:text-meranti-forest"
+        className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-meranti-mist px-3 py-2 text-sm font-medium text-meranti-forest/70 transition-colors hover:bg-meranti-sage hover:text-meranti-forest md:w-auto md:justify-start"
         aria-expanded={open}
       >
         <Shield className="h-4 w-4" />
@@ -70,7 +71,12 @@ export function AdminAuthButton({
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-72 rounded-2xl border border-meranti-mist bg-white p-4 shadow-xl">
+        <div
+          className={cn(
+            "relative z-50 mt-2 w-full rounded-2xl border border-meranti-mist bg-white p-4 shadow-xl",
+            "md:absolute md:right-0 md:w-72",
+          )}
+        >
           {isLoggedIn ? (
             <div className="flex flex-col gap-3">
               <p className="text-sm text-meranti-forest/70">
